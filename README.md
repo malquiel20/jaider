@@ -1,58 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Contac API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST en Laravel 13 para gestionar contactos personales. Cada usuario inicia sesión con un token de Sanctum y solo puede ver, editar o eliminar sus propios contactos.
 
-## About Laravel
+Proyecto del programa ADSO (SENA).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologías
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+PHP 8.4, Laravel 13, MySQL 8, Laravel Sanctum, Pest.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalación
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Crear antes las bases de datos en MySQL:
 
-## Contributing
+```sql
+CREATE DATABASE db_contac_api CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE db_contac_api_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Usuarios de prueba que crea el seeder (contraseña `password`):
 
-## Code of Conduct
+| Correo               | Contactos |
+|----------------------|-----------|
+| admin@contactos.test | 5         |
+| ana@contactos.test   | 5         |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Pruebas
 
-## Security Vulnerabilities
+Las pruebas usan la base `db_contac_api_test` (ver `phpunit.xml`), nunca la de desarrollo.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan test
+```
 
-## License
+## Base de datos
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**users**: id, first_name (obligatorio), last_name (opcional), email (obligatorio, único), password (hash), phone_number (opcional, único), created_at, updated_at.
+
+**contacts**: id, user_id (FK a users.id), first_name (obligatorio), last_name (opcional), phone_number (obligatorio, único), email (obligatorio, único), address (obligatorio), avatar_url (opcional), created_at, updated_at, deleted_at (borrado lógico).
+
+## Endpoints
+
+Base: `http://127.0.0.1:8000/api/v1`. Enviar siempre `Accept: application/json`. Las rutas con token usan `Authorization: Bearer <token>`.
+
+| Método | Ruta              | Descripción                              | Token |
+|--------|-------------------|------------------------------------------|-------|
+| GET    | /health           | Estado del servicio                      | No    |
+| POST   | /auth/register    | Registrar usuario y obtener token        | No    |
+| POST   | /auth/login       | Iniciar sesión (email, password, device_name) | No |
+| POST   | /auth/logout      | Cerrar sesión (revoca el token actual)   | Sí    |
+| GET    | /auth/me          | Perfil del usuario                       | Sí    |
+| PUT    | /auth/me          | Actualizar perfil del usuario            | Sí    |
+| GET    | /contacts         | Listar mis contactos (paginado)          | Sí    |
+| POST   | /contacts         | Crear contacto                           | Sí    |
+| GET    | /contacts/{id}    | Perfil de un contacto                    | Sí    |
+| PUT    | /contacts/{id}    | Actualizar contacto                      | Sí    |
+| DELETE | /contacts/{id}    | Eliminar contacto (soft delete)          | Sí    |
+
+## Reglas y restricciones
+
+| Situación                                   | Respuesta |
+|---------------------------------------------|-----------|
+| Sin token o token revocado                  | 401 `{"message": "No has iniciado sesión…", "login_url": ".../auth/login"}` |
+| Contacto de otro usuario                    | 403 `{"message": "No tienes permiso para acceder a este contacto."}` |
+| Contacto que no existe o ya fue eliminado   | 404 `{"message": "El recurso solicitado no existe."}` |
+| Ruta que no existe                          | 404 `{"message": "La ruta solicitada no existe."}` |
+| Datos inválidos, correo o teléfono repetido | 422 con `errors` campo por campo |
+| Más de 5 logins por minuto                  | 429 |
+
+El correo y el teléfono de un contacto no se pueden repetir entre contactos, y el correo y el teléfono de un usuario no se pueden repetir entre usuarios. Al eliminar un contacto solo se llena `deleted_at`: el registro sigue en la base pero ya no aparece en la API.
