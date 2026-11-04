@@ -1,0 +1,477 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-04T16:40:00.000Z",
+  "__export_source": "insomnia.desktop.app:v10.0.0",
+  "resources": [
+    {
+      "_id": "wrk_contac",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Contac API",
+      "description": "Colección de Contac API",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_contac",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000/api/v1",
+        "token": ""
+      }
+    },
+    {
+      "_id": "fld_1",
+      "_type": "request_group",
+      "parentId": "wrk_contac",
+      "name": "1. Salud",
+      "metaSortKey": 1
+    },
+    {
+      "_id": "fld_2",
+      "_type": "request_group",
+      "parentId": "wrk_contac",
+      "name": "2. Auth",
+      "metaSortKey": 2
+    },
+    {
+      "_id": "fld_3",
+      "_type": "request_group",
+      "parentId": "wrk_contac",
+      "name": "3. Perfil de usuario",
+      "metaSortKey": 3
+    },
+    {
+      "_id": "fld_4",
+      "_type": "request_group",
+      "parentId": "wrk_contac",
+      "name": "4. Contactos",
+      "metaSortKey": 4
+    },
+    {
+      "_id": "fld_5",
+      "_type": "request_group",
+      "parentId": "wrk_contac",
+      "name": "5. Restricciones (errores)",
+      "metaSortKey": 5
+    },
+    {
+      "_id": "req_01",
+      "_type": "request",
+      "parentId": "fld_1",
+      "name": "Health",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {},
+      "metaSortKey": 1,
+      "description": ""
+    },
+    {
+      "_id": "req_02",
+      "_type": "request",
+      "parentId": "fld_2",
+      "name": "Login (admin)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@contactos.test\",\n  \"password\": \"password\",\n  \"device_name\": \"insomnia\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 2,
+      "description": "",
+      "afterResponseScript": "const body = insomnia.response.json();\nif (body.token) {\n    insomnia.environment.set('token', body.token);\n}\n"
+    },
+    {
+      "_id": "req_03",
+      "_type": "request",
+      "parentId": "fld_2",
+      "name": "Login (ana)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"ana@contactos.test\",\n  \"password\": \"password\",\n  \"device_name\": \"insomnia\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 3,
+      "description": "",
+      "afterResponseScript": "const body = insomnia.response.json();\nif (body.token) {\n    insomnia.environment.set('token', body.token);\n}\n"
+    },
+    {
+      "_id": "req_04",
+      "_type": "request",
+      "parentId": "fld_2",
+      "name": "Registro",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"first_name\": \"Luis\",\n  \"last_name\": \"Gómez\",\n  \"email\": \"luis@contactos.test\",\n  \"password\": \"secreta123\",\n  \"password_confirmation\": \"secreta123\",\n  \"phone_number\": \"3105556677\",\n  \"device_name\": \"insomnia\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 4,
+      "description": "",
+      "afterResponseScript": "const body = insomnia.response.json();\nif (body.token) {\n    insomnia.environment.set('token', body.token);\n}\n"
+    },
+    {
+      "_id": "req_05",
+      "_type": "request",
+      "parentId": "fld_2",
+      "name": "Logout",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/logout",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 5,
+      "description": ""
+    },
+    {
+      "_id": "req_06",
+      "_type": "request",
+      "parentId": "fld_3",
+      "name": "Ver mi perfil",
+      "method": "GET",
+      "url": "{{ _.base_url }}/auth/me",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 6,
+      "description": ""
+    },
+    {
+      "_id": "req_07",
+      "_type": "request",
+      "parentId": "fld_3",
+      "name": "Actualizar mi perfil",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/auth/me",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"first_name\": \"Administrador\",\n  \"phone_number\": \"3000000009\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 7,
+      "description": ""
+    },
+    {
+      "_id": "req_08",
+      "_type": "request",
+      "parentId": "fld_4",
+      "name": "Listar contactos",
+      "method": "GET",
+      "url": "{{ _.base_url }}/contacts",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 8,
+      "description": ""
+    },
+    {
+      "_id": "req_09",
+      "_type": "request",
+      "parentId": "fld_4",
+      "name": "Crear contacto",
+      "method": "POST",
+      "url": "{{ _.base_url }}/contacts",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"first_name\": \"Carlos\",\n  \"last_name\": \"Ruiz\",\n  \"phone_number\": \"3114445566\",\n  \"email\": \"carlos@correo.test\",\n  \"address\": \"Calle 10 # 20-30\",\n  \"avatar_url\": \"https://example.com/avatar.png\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 9,
+      "description": ""
+    },
+    {
+      "_id": "req_10",
+      "_type": "request",
+      "parentId": "fld_4",
+      "name": "Ver perfil de contacto (id 1)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/contacts/1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 10,
+      "description": ""
+    },
+    {
+      "_id": "req_11",
+      "_type": "request",
+      "parentId": "fld_4",
+      "name": "Actualizar contacto (id 1)",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/contacts/1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"address\": \"Carrera 5 # 1-2\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 11,
+      "description": ""
+    },
+    {
+      "_id": "req_12",
+      "_type": "request",
+      "parentId": "fld_4",
+      "name": "Eliminar contacto (id 2)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/contacts/2",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 12,
+      "description": ""
+    },
+    {
+      "_id": "req_13",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Sin token (debe dar 401)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/contacts",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {},
+      "metaSortKey": 13,
+      "description": ""
+    },
+    {
+      "_id": "req_14",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Contacto de otro usuario (debe dar 403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/contacts/6",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 14,
+      "description": ""
+    },
+    {
+      "_id": "req_15",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Contacto que no existe (debe dar 404)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/contacts/9999",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 15,
+      "description": ""
+    },
+    {
+      "_id": "req_16",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Ruta que no existe (debe dar 404)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/no-existe",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {},
+      "authentication": {},
+      "metaSortKey": 16,
+      "description": ""
+    },
+    {
+      "_id": "req_17",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Correo repetido (debe dar 422)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/contacts",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"first_name\": \"Copia\",\n  \"phone_number\": \"3990001122\",\n  \"email\": \"carlos@correo.test\",\n  \"address\": \"Calle falsa 123\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": 17,
+      "description": ""
+    },
+    {
+      "_id": "req_18",
+      "_type": "request",
+      "parentId": "fld_5",
+      "name": "Contraseña incorrecta (debe dar 422)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@contactos.test\",\n  \"password\": \"mala\",\n  \"device_name\": \"insomnia\"\n}"
+      },
+      "authentication": {},
+      "metaSortKey": 18,
+      "description": ""
+    }
+  ]
+}
