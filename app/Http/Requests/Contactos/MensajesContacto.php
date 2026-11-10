@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Contacts;
+namespace App\Http\Requests\Contactos;
 
 /**
  * Mensajes de validación en español compartidos por crear y actualizar contactos.
  */
-class ContactMessages
+class MensajesContacto
 {
-    public static function all(): array
+    public static function todos(): array
     {
         return [
             'first_name.required' => 'El nombre es obligatorio.',

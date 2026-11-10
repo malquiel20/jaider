@@ -1,26 +1,34 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\ContactController;
-use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\ControladorAutenticacion;
+use App\Http\Controllers\Api\V1\ControladorContactos;
+use App\Http\Controllers\Api\V1\ControladorSalud;
 use Illuminate\Support\Facades\Route;
 
+// Todas las rutas quedan bajo /api/v1/...
 Route::prefix('v1')->group(function () {
-    Route::get('/health', HealthController::class)->name('health');
+    Route::get('/health', ControladorSalud::class)->name('salud');
 
-    Route::post('/auth/register', [AuthController::class, 'register'])
-        ->middleware('throttle:login')
-        ->name('auth.register');
+    // Rutas públicas, con límite de 5 intentos por minuto.
+    Route::post('/auth/register', [ControladorAutenticacion::class, 'registrar'])
+        ->middleware('throttle:inicio-sesion')
+        ->name('auth.registrar');
 
-    Route::post('/auth/login', [AuthController::class, 'login'])
-        ->middleware('throttle:login')
-        ->name('auth.login');
+    Route::post('/auth/login', [ControladorAutenticacion::class, 'iniciarSesion'])
+        ->middleware('throttle:inicio-sesion')
+        ->name('auth.iniciar_sesion');
 
+    // Rutas que exigen token (sesión iniciada). Sin token responden 401.
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/auth/me', [AuthController::class, 'me'])->name('auth.me');
-        Route::put('/auth/me', [AuthController::class, 'updateProfile'])->name('auth.me.update');
-        Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+        Route::get('/auth/me', [ControladorAutenticacion::class, 'perfil'])->name('auth.perfil');
+        Route::put('/auth/me', [ControladorAutenticacion::class, 'actualizarPerfil'])->name('auth.actualizar_perfil');
+        Route::post('/auth/logout', [ControladorAutenticacion::class, 'cerrarSesion'])->name('auth.cerrar_sesion');
 
-        Route::apiResource('contacts', ContactController::class);
+        // CRUD de contactos. {contacto} es el id que llega en la URL.
+        Route::get('/contacts', [ControladorContactos::class, 'listar'])->name('contactos.listar');
+        Route::post('/contacts', [ControladorContactos::class, 'crear'])->name('contactos.crear');
+        Route::get('/contacts/{contacto}', [ControladorContactos::class, 'ver'])->name('contactos.ver');
+        Route::match(['put', 'patch'], '/contacts/{contacto}', [ControladorContactos::class, 'actualizar'])->name('contactos.actualizar');
+        Route::delete('/contacts/{contacto}', [ControladorContactos::class, 'eliminar'])->name('contactos.eliminar');
     });
 });

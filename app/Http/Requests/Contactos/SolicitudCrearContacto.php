@@ -1,16 +1,25 @@
 <?php
 
-namespace App\Http\Requests\Contacts;
+namespace App\Http\Requests\Contactos;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreContactRequest extends FormRequest
+/**
+ * Valida los datos para crear un contacto (POST /contacts).
+ */
+class SolicitudCrearContacto extends FormRequest
 {
+    /**
+     * Cualquier usuario con sesión iniciada puede crear contactos.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Reglas de validación. El correo y el teléfono no se pueden repetir entre contactos.
+     */
     public function rules(): array
     {
         return [
@@ -23,8 +32,11 @@ class StoreContactRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error en español.
+     */
     public function messages(): array
     {
-        return ContactMessages::all();
+        return MensajesContacto::todos();
     }
 }

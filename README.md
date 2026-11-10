@@ -32,6 +32,10 @@ Usuarios de prueba que crea el seeder (contraseña `password`):
 | admin@contactos.test | 5         |
 | ana@contactos.test   | 5         |
 
+## Glosario del código
+
+Las clases, métodos y variables del proyecto están en español. En [docs/GLOSARIO.md](docs/GLOSARIO.md) está dónde queda cada pieza y qué se dejó en inglés y por qué.
+
 ## Pruebas
 
 Las pruebas usan la base `db_contac_api_test` (ver `phpunit.xml`), nunca la de desarrollo.

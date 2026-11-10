@@ -2,18 +2,21 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contact;
-use App\Models\User;
+use App\Models\Contacto;
+use App\Models\Usuario;
 use Illuminate\Database\Seeder;
 
-class ContactSeeder extends Seeder
+/**
+ * Llena la base con datos de prueba.
+ */
+class SembradorContactos extends Seeder
 {
     /**
      * Dos usuarios de prueba (contraseña: password), cada uno con 5 contactos.
      */
     public function run(): void
     {
-        $admin = User::factory()->create([
+        $admin = Usuario::factory()->create([
             'first_name' => 'Admin',
             'last_name' => 'Contactos',
             'email' => 'admin@contactos.test',
@@ -21,7 +24,7 @@ class ContactSeeder extends Seeder
             'phone_number' => '3000000001',
         ]);
 
-        $ana = User::factory()->create([
+        $ana = Usuario::factory()->create([
             'first_name' => 'Ana',
             'last_name' => 'Pérez',
             'email' => 'ana@contactos.test',
@@ -29,7 +32,7 @@ class ContactSeeder extends Seeder
             'phone_number' => '3000000002',
         ]);
 
-        Contact::factory(5)->for($admin)->create();
-        Contact::factory(5)->for($ana)->create();
+        Contacto::factory(5)->for($admin)->create();
+        Contacto::factory(5)->for($ana)->create();
     }
 }

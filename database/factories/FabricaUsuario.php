@@ -2,22 +2,29 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Usuario;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * @extends Factory<User>
+ * Crea usuarios falsos para las pruebas y el sembrador.
+ *
+ * @extends Factory<Usuario>
  */
-class UserFactory extends Factory
+class FabricaUsuario extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * Modelo que crea esta fábrica.
      */
-    protected static ?string $password;
+    protected $model = Usuario::class;
 
     /**
-     * Define the model's default state.
+     * Contraseña encriptada que comparten todos los usuarios falsos ("password").
+     */
+    protected static ?string $contrasena;
+
+    /**
+     * Datos por defecto de cada usuario falso.
      *
      * @return array<string, mixed>
      */
@@ -27,7 +34,7 @@ class UserFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$contrasena ??= Hash::make('password'),
             'phone_number' => fake()->unique()->numerify('3#########'),
         ];
     }

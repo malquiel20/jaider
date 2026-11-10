@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Contact;
-use App\Models\User;
+use App\Models\Contacto;
+use App\Models\Usuario;
 use Laravel\Sanctum\Sanctum;
 
 beforeEach(function () {
-    $this->user = User::factory()->create([
+    $this->usuario = Usuario::factory()->create([
         'first_name' => 'Ana',
         'last_name' => 'Pérez',
         'email' => 'ana@contactos.test',
@@ -16,8 +16,8 @@ beforeEach(function () {
 // GET /api/v1/auth/me
 
 it('muestra el perfil del usuario autenticado', function () {
-    Contact::factory(3)->for($this->user)->create();
-    Sanctum::actingAs($this->user);
+    Contacto::factory(3)->for($this->usuario)->create();
+    Sanctum::actingAs($this->usuario);
 
     $this->getJson('/api/v1/auth/me')
         ->assertOk()
@@ -31,7 +31,7 @@ it('muestra el perfil del usuario autenticado', function () {
 it('pide iniciar sesión para ver el perfil', function () {
     $this->getJson('/api/v1/auth/me')
         ->assertUnauthorized()
-        ->assertJsonPath('login_url', route('auth.login'));
+        ->assertJsonPath('login_url', route('auth.iniciar_sesion'));
 });
 
 it('responde 401 en JSON aunque falte la cabecera Accept', function () {
@@ -43,7 +43,7 @@ it('responde 401 en JSON aunque falte la cabecera Accept', function () {
 // PUT /api/v1/auth/me
 
 it('actualiza el perfil del usuario', function () {
-    Sanctum::actingAs($this->user);
+    Sanctum::actingAs($this->usuario);
 
     $this->putJson('/api/v1/auth/me', [
         'first_name' => 'Ana María',
@@ -53,11 +53,11 @@ it('actualiza el perfil del usuario', function () {
         ->assertJsonPath('data.first_name', 'Ana María')
         ->assertJsonPath('data.phone_number', '3009998877');
 
-    expect($this->user->fresh()->first_name)->toBe('Ana María');
+    expect($this->usuario->fresh()->first_name)->toBe('Ana María');
 });
 
 it('permite dejar el mismo correo y teléfono propios', function () {
-    Sanctum::actingAs($this->user);
+    Sanctum::actingAs($this->usuario);
 
     $this->putJson('/api/v1/auth/me', [
         'email' => 'ana@contactos.test',
@@ -66,8 +66,8 @@ it('permite dejar el mismo correo y teléfono propios', function () {
 });
 
 it('no deja usar el correo de otro usuario en el perfil', function () {
-    User::factory()->create(['email' => 'luis@contactos.test']);
-    Sanctum::actingAs($this->user);
+    Usuario::factory()->create(['email' => 'luis@contactos.test']);
+    Sanctum::actingAs($this->usuario);
 
     $this->putJson('/api/v1/auth/me', ['email' => 'luis@contactos.test'])
         ->assertUnprocessable()
@@ -75,8 +75,8 @@ it('no deja usar el correo de otro usuario en el perfil', function () {
 });
 
 it('no deja usar el teléfono de otro usuario en el perfil', function () {
-    User::factory()->create(['phone_number' => '3205554433']);
-    Sanctum::actingAs($this->user);
+    Usuario::factory()->create(['phone_number' => '3205554433']);
+    Sanctum::actingAs($this->usuario);
 
     $this->putJson('/api/v1/auth/me', ['phone_number' => '3205554433'])
         ->assertUnprocessable()

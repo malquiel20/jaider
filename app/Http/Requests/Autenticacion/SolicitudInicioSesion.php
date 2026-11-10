@@ -1,16 +1,25 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Autenticacion;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+/**
+ * Valida los datos del inicio de sesión (POST /auth/login).
+ */
+class SolicitudInicioSesion extends FormRequest
 {
+    /**
+     * Cualquiera puede intentar iniciar sesión.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Reglas de validación.
+     */
     public function rules(): array
     {
         return [
@@ -20,6 +29,9 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error en español.
+     */
     public function messages(): array
     {
         return [

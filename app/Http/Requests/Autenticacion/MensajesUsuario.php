@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Autenticacion;
 
 /**
  * Mensajes de validación en español compartidos por el registro y el perfil.
  */
-class UserMessages
+class MensajesUsuario
 {
-    public static function all(): array
+    public static function todos(): array
     {
         return [
             'first_name.required' => 'El nombre es obligatorio.',

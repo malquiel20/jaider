@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 
-class HealthController extends Controller
+/**
+ * GET /api/v1/health: indica si la API está funcionando.
+ */
+class ControladorSalud extends Controller
 {
     /**
-     * Estado del servicio.
+     * Estado del servicio. Un controlador con un solo método usa __invoke().
      *
      * @unauthenticated
      */

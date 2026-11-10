@@ -1,16 +1,25 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Autenticacion;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+/**
+ * Valida los datos del registro de un usuario nuevo (POST /auth/register).
+ */
+class SolicitudRegistro extends FormRequest
 {
+    /**
+     * Cualquiera puede registrarse.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Reglas de validación. El correo y el teléfono no se pueden repetir entre usuarios.
+     */
     public function rules(): array
     {
         return [
@@ -23,8 +32,11 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error en español.
+     */
     public function messages(): array
     {
-        return UserMessages::all();
+        return MensajesUsuario::todos();
     }
 }
